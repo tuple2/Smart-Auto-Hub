@@ -5,6 +5,7 @@ import { useState } from "react"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import { headerMenuData } from "@/constants/data"
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
@@ -22,27 +23,36 @@ export function Header() {
             priority
           />
           {/* <span className="text-2xl font-bold text-primary">Smart AutoHub</span> */}
-          <div className="flex flex-col sm:flex-row sm:items-center leading-tight">
-            <span className="text-3xl font-extrabold tracking-wide 
-              bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent px-1">
-              Smart
-            </span>
+          <div className="flex flex-col sm:flex-row leading-tight sm:items-center">
+              
+              {/* Smart */}
+              <span className="text-3xl font-extrabold tracking-wide
+                bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent transition-all duration-400 hover:brightness-200">
+                Smart
+              </span>
 
-            <span className="text-3xl font-extrabold text-black sm:ml-1">
-              Auto
-            </span>
-
-            <span className="text-3xl font-extrabold text-red-700">
-              Hub
-            </span>
+              {/* AutoHub grouped together */}
+              <span className="text-3xl font-extrabold sm:ml-2">
+                <span className="text-black hover:text-red-700">Auto</span>
+                <span className="text-red-700 hover:text-orange-500">Hub</span>
+              </span>
           </div>
-
 
         </Link>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
-          <Link href="/" className="text-foreground hover:text-primary transition">
+          {headerMenuData?.map((item) => (
+            <Link 
+              key={item?.title}
+              href={item?.href}
+              className="text-foreground hover:text-primary transition">
+                {item?.title}
+            </Link>
+          ))}
+
+
+          {/* <Link href="/" className="text-foreground hover:text-primary transition">
             Home
           </Link>
           <Link href="/vehicles" className="text-foreground hover:text-primary transition">
@@ -56,7 +66,7 @@ export function Header() {
           </Link>
           <Link href="/contact" className="text-foreground hover:text-primary transition">
             Contact
-          </Link>
+          </Link> */}
         </div>
 
         {/* Auth Buttons */}
