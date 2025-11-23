@@ -6,9 +6,12 @@ import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import { headerMenuData } from "@/constants/data"
+import { usePathname } from "next/navigation"
+import path from "path"
 
 export function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+  const pathname = usePathname();
 
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50">
@@ -46,8 +49,10 @@ export function Header() {
             <Link 
               key={item?.title}
               href={item?.href}
-              className="text-foreground hover:text-primary transition">
+              className={`relative text-foreground font-medium hover:text-primary transition group ${pathname === item?.href && "text-primary"}`}>
                 {item?.title}
+                <span className={`absolute -bottom-0.5 left-1/2 w-0 h-0.5 bg-orange-500 group-hover:w-1/2 hover-effect group-hover:left-0 duration-150 ${pathname === item?.href && "w-1/2"}`}/>                
+                <span className={`absolute -bottom-0.5 right-1/2 w-0 h-0.5 bg-orange-500 group-hover:w-1/2 hover-effect group-hover:right-0 duration-150 ${pathname === item?.href && "w-1/2"}`}/>
             </Link>
           ))}
 
