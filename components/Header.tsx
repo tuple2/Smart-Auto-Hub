@@ -26,7 +26,7 @@ export function Header() {
   //MOCK AUTH
   const isLoggedIn = true;
   const userRole = "admin";
-  const isAdmin = false;
+  const isAdmin = true;
   const userName = "Kavindu";
 
   const getInitials = (name: string) => {
