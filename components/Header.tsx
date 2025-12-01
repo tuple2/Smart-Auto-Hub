@@ -1,13 +1,13 @@
 "use client"
 
-import Link from "next/link"
-import { useState } from "react"
-import { Menu, X, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
-import { headerMenuData } from "@/constants/data"
-import { usePathname } from "next/navigation"
-import path from "path"
+import Link from "next/link";
+import { useState } from "react";
+import { Menu, X, User, LayoutDashboard, Shield, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { headerMenuData } from "@/constants/data";
+import { usePathname } from "next/navigation";
+import path from "path";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +15,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
@@ -103,42 +104,86 @@ export function Header() {
 
         {/* DESKTOP AUTH / PROFILE */}
         {/* Auth Buttons */}
+
         <div className="hidden md:flex items-center gap-4">
-          {!isLoggedIn ? (
-          <>
-            <Button variant="outline" asChild>
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/register">Register</Link>
-            </Button>
-          </>
-          ) : (
-            <div className="relative">
-              <button
-                onClick={() => setProfileOpen(!profileOpen)}
-                className="flex items-center gap-2 px-3 py-2 border rounded-lg hover:bg-accent"
-              >
-                <User size={18} />
-                {userName}
-              </button>
-
-              {/* Profile Dropdown */}
-              {profileOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-card shadow-lg border rounded-lg p-2">
-                  <Link href="/dashboard" className="block px-3 py-2 hover:bg-accent">Dashboard</Link>
-                  <Link href="/bookings" className="block px-3 py-2 hover:bg-accent">My Bookings</Link>
-
-                  {userRole === "admin" && (
-                    <Link href="/admin" className="block px-3 py-2 hover:bg-accent text-red-600 font-semibold">
-                      Admin Panel
+          {isLoggedIn ? (
+            // Logged in user - show avatar with dropdown
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="flex items-center gap-2 hover:opacity-80 transition">
+                  <Avatar className="h-10 w-10 border-2 border-primary">
+                    <AvatarImage src="/placeholder.svg" alt={userName} />
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {getInitials(userName)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="text-left">
+                    <p className="text-sm font-medium text-foreground">{userName}</p>
+                    {isAdmin && <p className="text-xs text-muted-foreground">Admin</p>}
+                  </div>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard" className="cursor-pointer">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    <span>Dashboard</span>
+                  </Link>
+                </DropdownMenuItem>
+                {isAdmin && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin" className="cursor-pointer">
+                      <Shield className="mr-2 h-4 w-4" />
+                      <span>Admin Panel</span>
                     </Link>
-                  )}
-
-                  <button className="block w-full text-left px-3 py-2 hover:bg-accent">Logout</button>
-                </div>
-              )}
-            </div>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="cursor-pointer text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            // Not logged in - show avatar that redirects to login + Login/Register buttons
+            <>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="hover:opacity-80 transition" title="Open account menu">
+                    <Avatar className="h-10 w-10 border-2 border-border">
+                      <AvatarFallback className="bg-muted">
+                        <User className="h-5 w-5 text-muted-foreground" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/login" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Sign In</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/dashboard" className="cursor-pointer">
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <span>Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button variant="outline" asChild>
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button asChild>
+                <Link href="/register">Register</Link>
+              </Button>
+            </>
           )}
         </div>
 
@@ -175,42 +220,75 @@ export function Header() {
               </Link>
             ))}
 
-            {/* ---------------- LOGGED-IN SECTION ---------------- */}
+            {/* ---------------- LOGGED-IN / OUT SECTION ---------------- */}
 
-            {isLoggedIn && (
+            {isLoggedIn ? (
               <>
-                <hr className="border-border" />
+                {/* Separator Line */}
+                <div className="border-t border-border my-4" />
 
-                {/* USER BLOCK */}
-                <div className="flex items-center gap-2 text-sm font-medium">
-                  <User size={18} className="text-primary" />
-                  {userName} {userRole === "admin" && "(Admin)"}
+                <div className="flex items-center gap-2 py-2">
+                  <Avatar className="h-8 w-8 border-2 border-primary">
+                    <AvatarImage src="/placeholder.svg" alt={userName} />
+                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                      {getInitials(userName)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="font-medium text-foreground">
+                    {userName}
+                    {isAdmin && <span className="text-destructive ml-1">(Admin)</span>}
+                  </span>
                 </div>
 
-                <Link href="/dashboard" className="block hover:text-primary">Dashboard</Link>
-                <Link href="/bookings" className="block hover:text-primary">My Bookings</Link>
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 text-foreground hover:text-primary py-2 pl-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                  <span>Dashboard</span>
+                </Link>
 
-                {userRole === "admin" && (
-                  <Link href="/admin" className="block text-red-600 hover:text-red-700 font-semibold">
-                    Admin Panel
+                {isAdmin && (
+                  <Link
+                    href="/admin"
+                    className="flex items-center gap-2 text-foreground hover:text-primary py-2 pl-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Shield className="h-4 w-4" />
+                    <span>Admin Panel</span>
                   </Link>
                 )}
 
-                <button className="block text-left w-full hover:text-primary pt-2">Logout</button>
+                <button
+                  className="flex items-center gap-2 text-foreground hover:text-destructive py-2 pl-2 w-full text-left"
+                  onClick={() => {
+                    setMobileMenuOpen(false)
+                    // Add logout logic here
+                  }}
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </button>
+              </>
+            ) : (
+              <>
+                {/* Login/Register Buttons for Non-Logged In Users */}
+                <div className="flex gap-2 pt-4">
+                  <Button variant="outline" asChild className="flex-1 bg-transparent">
+                    <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
+                      Login
+                    </Link>
+                  </Button>
+                  <Button asChild className="flex-1">
+                    <Link href="/register" onClick={() => setMobileMenuOpen(false)}>
+                      Register
+                    </Link>
+                  </Button>
+                </div>
               </>
             )}
 
-            {/* ---------------- LOGGED-OUT SECTION ---------------- */}
-            {!isLoggedIn && (
-              <div className="flex gap-2 pt-4">
-                <Button variant="outline" asChild className="flex-1 bg-transparent">
-                  <Link href="/login">Login</Link>
-                </Button>
-                <Button asChild className="flex-1">
-                  <Link href="/register">Register</Link>
-                </Button>
-              </div>
-            )}
           </div>
         </div>
       )}
