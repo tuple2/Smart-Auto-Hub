@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Header } from "@/components/Header"
 import { Footer } from "@/components/Footer"
 import { Button } from "@/components/ui/button"
-import { Star, ChevronLeft } from 'lucide-react'
+import { Star, ChevronLeft, MessageSquare } from 'lucide-react'
 
 const vehiclesData = {
   1: {
@@ -257,6 +257,11 @@ export default function VehicleDetailsPage({ params }) {
             Write a Review (Sign in required)
           </Button>
         </div>
+      </div>
+
+      {/* Chatbot Icon */}
+      <div className="fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg cursor-pointer hover:scale-110 transition">
+        <MessageSquare size={32} />
       </div>
 
       <Footer />

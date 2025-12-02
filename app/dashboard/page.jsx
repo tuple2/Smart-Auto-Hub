@@ -477,6 +477,11 @@ export default function DashboardPage() {
         </div>
       </div>
 
+      {/* Chatbot Icon */}
+      <div className="fixed bottom-6 right-6 bg-primary text-primary-foreground rounded-full p-4 shadow-lg cursor-pointer hover:scale-110 transition">
+        <MessageSquare size={32} />
+      </div>
+
       <Footer />
     </div>
   )
