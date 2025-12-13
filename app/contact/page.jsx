@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Header } from "@/components/Header"
 import { Footer } from "@/components/Footer"
 import { Button } from "@/components/ui/button"
-import { Phone, Mail, MapPin, Clock, Send, MessageSquare, Building } from 'lucide-react'
+import { Phone, Mail, MapPin, Clock, Send, MessageSquare, Building, AlertCircle } from 'lucide-react'
 import ChatBot from "@/components/ChatBot"
  
 export default function ContactPage() {
@@ -16,16 +16,92 @@ export default function ContactPage() {
     message: "",
   })
 
+  const [errors, setErrors] = useState({})
+  const [touched, setTouched] = useState({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!email) return "Email is required"
+    if (!emailRegex.test(email)) return "Please enter a valid email address"
+    return ""
+  }
+
+  const validatePhone = (phone) => {
+    if (!phone) return "" // Optional field
+    const phoneRegex = /^0\d{9}$/
+    if (!phoneRegex.test(phone.replace(/\s/g, ""))) {
+      return "Please enter a valid Sri Lankan phone number (10 digits starting with 0)"
+    }
+    return ""
+  }
+
+  const validateMessage = (message) => {
+    if (!message) return "Message is required"
+    if (message.length < 10) return "Message must be at least 10 characters"
+    return ""
+  }
+
+  const validateField = (name, value) => {
+    switch (name) {
+      case "name":
+        return !value ? "Full name is required" : ""
+      case "email":
+        return validateEmail(value)
+      case "phone":
+        return validatePhone(value)
+      case "subject":
+        return !value ? "Please select a subject" : ""
+      case "message":
+        return validateMessage(value)
+      default:
+        return ""
+    }
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+
+    if (touched[name]) {
+      const error = validateField(name, value)
+      setErrors((prev) => ({ ...prev, [name]: error }))
+    }
   }
 
-  const handleSubmit = (e) => {
+  const handleBlur = (e) => {
+    const { name, value } = e.target
+    setTouched((prev) => ({ ...prev, [name]: true }))
+    const error = validateField(name, value)
+    setErrors((prev) => ({ ...prev, [name]: error }))
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
+
+    const newErrors = {}
+    Object.keys(formData).forEach((key) => {
+      const error = validateField(key, formData[key])
+      if (error) newErrors[key] = error
+    })
+
+    const allTouched = Object.keys(formData).reduce((acc, key) => ({ ...acc, [key]: true }), {})
+    setTouched(allTouched)
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+
+    setIsSubmitting(true)
+
+    // Simulate network delay
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    setIsSubmitting(false)
     setSubmitted(true)
+
     setTimeout(() => {
       setFormData({
         name: "",
@@ -34,8 +110,17 @@ export default function ContactPage() {
         subject: "",
         message: "",
       })
+      setErrors({})
+      setTouched({})
       setSubmitted(false)
     }, 3000)
+  }
+
+  const getInputClassName = (fieldName, baseClassName) => {
+    if (errors[fieldName] && touched[fieldName]) {
+      return `${baseClassName} border-red-500 focus:ring-red-500`
+    }
+    return baseClassName
   }
 
   return (
@@ -222,7 +307,7 @@ export default function ContactPage() {
               <h2 className="text-2xl font-bold mb-6">Send us a Message</h2>
 
               {submitted && (
-                <div className="mb-6 p-4 rounded-lg bg-green-50 border border-green-200">
+                <div className="mb-6 p-4 rounded-lg bg-green-50 border border-green-200 animate-in fade-in slide-in-from-top-2 duration-300">
                   <p className="text-green-800 font-semibold">
                     Thank you for your message! We'll get back to you as soon as possible.
                   </p>
@@ -239,10 +324,19 @@ export default function ContactPage() {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      required
+                      onBlur={handleBlur}
                       placeholder="John Doe"
-                      className="w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                      className={getInputClassName(
+                        "name",
+                        "w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition",
+                      )}
                     />
+                    {errors.name && touched.name && (
+                      <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                        <AlertCircle size={12} />
+                        <span>{errors.name}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Email */}
@@ -253,10 +347,19 @@ export default function ContactPage() {
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      required
+                      onBlur={handleBlur}
                       placeholder="john@example.com"
-                      className="w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                      className={getInputClassName(
+                        "email",
+                        "w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition",
+                      )}
                     />
+                    {errors.email && touched.email && (
+                      <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                        <AlertCircle size={12} />
+                        <span>{errors.email}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -268,9 +371,19 @@ export default function ContactPage() {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
+                    onBlur={handleBlur}
                     placeholder="077 XXX XXXX"
-                    className="w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                    className={getInputClassName(
+                      "phone",
+                      "w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition",
+                    )}
                   />
+                  {errors.phone && touched.phone && (
+                    <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                      <AlertCircle size={12} />
+                      <span>{errors.phone}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Subject */}
@@ -280,8 +393,12 @@ export default function ContactPage() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    required
-                    className="w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition">
+                    onBlur={handleBlur}
+                    className={getInputClassName(
+                      "subject",
+                      "w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition",
+                    )}
+                  >
                     <option value="">Select a subject</option>
                     <option value="general-inquiry">General Inquiry</option>
                     <option value="vehicle-inquiry">Vehicle Inquiry</option>
@@ -290,26 +407,53 @@ export default function ContactPage() {
                     <option value="feedback">Feedback</option>
                     <option value="other">Other</option>
                   </select>
+                  {errors.subject && touched.subject && (
+                    <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                      <AlertCircle size={12} />
+                      <span>{errors.subject}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Message */}
                 <div>
-                  <label className="block text-sm font-semibold mb-2">Message *</label>
+                  <div className="flex justify-between items-center mb-2">
+                    <label className="block text-sm font-semibold">Message *</label>
+                    <span className="text-xs text-muted-foreground">{formData.message.length} characters</span>
+                  </div>
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    required
+                    onBlur={handleBlur}
                     placeholder="Tell us your message here..."
                     rows="6"
-                    className="w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none"
+                    className={getInputClassName(
+                      "message",
+                      "w-full px-4 py-3 rounded-lg bg-input border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary resize-none transition",
+                    )}
                   />
+                  {errors.message && touched.message && (
+                    <div className="flex items-center gap-1 mt-1 text-red-600 text-xs">
+                      <AlertCircle size={12} />
+                      <span>{errors.message}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Submit Button */}
-                <Button type="submit" className="w-full" size="lg">
-                  <Send className="mr-2" size={18} />
-                  Send Message
+                <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 animate-spin" size={18} />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="mr-2" size={18} />
+                      Send Message
+                    </>
+                  )}
                 </Button>
               </form>
             </div>
