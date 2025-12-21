@@ -39,7 +39,6 @@ import {
 import ChatBot from "@/components/ChatBot";
 import { useRouter } from "next/navigation";
 import { localStorageAPI } from "@/lib/storage/localStorage.js";
-import { emit } from "process";
 
 //testing
 
@@ -169,7 +168,7 @@ export default function Home() {
   };
 
   const onSubscribeWrapper = async () => {
-    if (!email) return handleSubscribe(email, session?.user?.id, setEmail); //let the helper handle the email verification
+    if (!email) return handleSubscribe(email, session?.user?.id, setEmail); // Let the helper handle empty email validation
 
     setIsLoading(true);
 
@@ -208,7 +207,8 @@ export default function Home() {
               "url(/placeholder.svg?height=576&width=1920&query=professional luxury car dealership showroom exterior with modern glass building)",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            animation: "imageReveal 1.2s ease-out, kenBurnsZoom 4s ease-out forwards",
+            animation:
+              "imageReveal 1.2s ease-out, kenBurnsZoom 4s ease-out forwards",
           }}
         ></div> */}
 
@@ -688,7 +688,7 @@ export default function Home() {
             >
               {isLoading ? (
                 <>
-                  <Loader2 className="mr-2 animate-spin" />
+                  <Loader2 className="mr-2 animate-spin" size={20} />
                   Subscribing
                 </>
               ) : (
