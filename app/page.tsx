@@ -392,7 +392,7 @@ export default function Home() {
       <section className="bg-linear-to-br from-secondary/10 via-primary/5 to-accent/10 py-20 mb-24">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-4xl font-bold mb-4">
+            <h2 className="text-4xl md:text-4xl font-bold mb-4 text-balance">
               How It Works
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -403,11 +403,14 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
             <div className="bg-card p-8 rounded-xl border border-border text-center hover:shadow-xl transition-shadow duration-300 relative group hover-glow fade-in-up delay-100">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 inline-flex items-center justify-center w-16 h-16 bg-blue-500 rounded-full shadow-lg text-white font-bold text-xl">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 inline-flex items-center justify-center w-16 h-16 bg-blue-600 dark:bg-blue-500 rounded-full shadow-lg text-white font-bold text-xl">
                 1
               </div>
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-50 rounded-2xl mb-6 mt-4 group-hover:scale-110 transition-transform">
-                <Search className="text-blue-500" size={40} />
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-100 dark:bg-blue-500/20 rounded-2xl mb-6 mt-4 group-hover:scale-110 transition-transform">
+                <Search
+                  className="text-blue-600 dark:text-blue-400"
+                  size={40}
+                />
               </div>
               <h3 className="font-bold text-2xl mb-4">Search</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -418,11 +421,14 @@ export default function Home() {
 
             {/* Step 2 */}
             <div className="bg-card p-8 rounded-xl border border-border text-center hover:shadow-xl transition-shadow duration-300 relative group hover-glow fade-in-up delay-200">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 inline-flex items-center justify-center w-16 h-16 bg-green-500 rounded-full shadow-lg text-white font-bold text-xl">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 inline-flex items-center justify-center w-16 h-16 bg-emerald-600 dark:bg-emerald-500 rounded-full shadow-lg text-white font-bold text-xl">
                 2
               </div>
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-green-50 rounded-2xl mb-6 mt-4 group-hover:scale-110 transition-transform">
-                <MessageSquare className="text-green-500" size={40} />
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-emerald-500/20 rounded-2xl mb-6 mt-4 group-hover:scale-110 transition-transform">
+                <MessageSquare
+                  className="text-green-600 dark:text-emerald-400"
+                  size={40}
+                />
               </div>
               <h3 className="font-bold text-2xl mb-4">Consult</h3>
               <p className="text-muted-foreground leading-relaxed">
@@ -432,11 +438,14 @@ export default function Home() {
 
             {/* Step 3 */}
             <div className="bg-card p-8 rounded-xl border border-border text-center hover:shadow-xl transition-shadow duration-300 relative group hover-glow fade-in-up delay-300">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 inline-flex items-center justify-center w-16 h-16 bg-purple-500 rounded-full shadow-lg text-white font-bold text-xl">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 inline-flex items-center justify-center w-16 h-16 bg-purple-600 dark:bg-purple-500 rounded-full shadow-lg text-white font-bold text-xl">
                 3
               </div>
-              <div className="inline-flex items-center justify-center w-20 h-20 bg-purple-50 rounded-2xl mb-6 mt-4 group-hover:scale-110 transition-transform">
-                <Calendar className="text-purple-500" size={40} />
+              <div className="inline-flex items-center justify-center w-20 h-20 bg-purple-100 dark:bg-purple-500/20 rounded-2xl mb-6 mt-4 group-hover:scale-110 transition-transform">
+                <Calendar
+                  className="text-purple-500 dark:text-purple-400"
+                  size={40}
+                />
               </div>
               <h3 className="font-bold text-2xl mb-4">Book</h3>
               <p className="text-muted-foreground leading-relaxed">
